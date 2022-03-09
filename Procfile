@@ -1,1 +1,1 @@
-web: gunicorn covid-verify.wsgi
+web: gunicorn covid_status_verifier.wsgi
