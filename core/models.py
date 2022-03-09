@@ -1,3 +1,20 @@
+from pyexpat import model
+from statistics import mode
 from django.db import models
 
-# Create your models here.
+
+class Person(models.Model):
+    class Meta:
+        db_table = "people"
+
+    national_id = models.CharField(primary_key=True, max_length=20)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    gender = models.CharField(max_length=10)
+    date_of_birth = models.DateField()
+    home_address = models.CharField(max_length=200)
+    email_address = models.EmailField(max_length=50)
+    phone_number = models.CharField(max_length=50)
+
+    def __str__(self):
+        return str(self.national_id)
