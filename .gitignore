@@ -6,3 +6,4 @@ staticfiles/
 
 db.sqlite3
 .env
+core/admin.py

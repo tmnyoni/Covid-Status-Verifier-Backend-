@@ -8,9 +8,9 @@ from . import serializers
 
 class PeopleViewset(viewsets.ViewSet):
     queryset = models.Person.objects.all()
-    serializer_class = serializers.Person
+    serializer_class = serializers.PersonSerializer
 
     def list(self, request):
         queryset = models.Person.objects.all()
         serializer = serializers.PersonSerializer(queryset, many=True)
-        return Response(serializer.data,  status=status.HTTP_200_OK)
+        return Response(serializer.data)
