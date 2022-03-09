@@ -2,7 +2,7 @@ venv/
 *__pycache__/
 .vscode/
 staticfiles/
-
+media/
 
 db.sqlite3
 .env

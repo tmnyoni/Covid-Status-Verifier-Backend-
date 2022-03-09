@@ -7,6 +7,7 @@ class Person(models.Model):
     class Meta:
         db_table = "people"
 
+    image = models.ImageField(null=True, blank=True, upload_to="people")
     national_id = models.CharField(primary_key=True, max_length=20)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
