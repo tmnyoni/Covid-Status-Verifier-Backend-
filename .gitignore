@@ -2,7 +2,6 @@ venv/
 *__pycache__/
 .vscode/
 staticfiles/
-core/migrations/
 
 
 db.sqlite3
