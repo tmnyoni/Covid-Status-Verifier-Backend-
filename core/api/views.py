@@ -1,7 +1,9 @@
+import hashlib
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from .. import models
 from . import serializers
@@ -56,4 +58,31 @@ class PeopleViewset(viewsets.ViewSet):
         return Response(
             data={"Success": "Deleted successfully"},
             status=status.HTTP_204_NO_CONTENT
+        )
+
+    @action(detail=True, methods=["post"])
+    def recognize_qrcode(self, request, pk=None):
+        if request.method == "POST":
+            qrcode = request.data["qrcode"]
+            object_ = get_object_or_404(self.queryset, pk=pk)
+
+            object_qrcode = hashlib.sha3_512(
+                object_.national_id.encode()
+            ).hexdigest()
+
+            if qrcode != object_qrcode:
+                return Response(
+                    data={"Error": "Qrcode Verification failed"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            if qrcode == object_qrcode:
+                return Response(
+                    data={"Success": "Qrcode verified"},
+                    status=status.HTTP_200_OK
+                )
+
+        return Response(
+            data={"Error": "Something happened"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
