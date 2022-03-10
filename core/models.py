@@ -16,6 +16,18 @@ class Person(models.Model):
     home_address = models.CharField(max_length=200)
     email_address = models.EmailField(max_length=50)
     phone_number = models.CharField(max_length=50)
+    vaccinate = models.BooleanField(default=True)
 
     def __str__(self):
         return str(self.national_id)
+
+
+class StakeHolder(models.Model):
+    class Meta:
+        db_table = "stakeholders"
+
+    organisation = models.CharField(max_length=100)
+    representative = models.ForeignKey(Person, on_delete=models.CASCADE)
+    contacts = models.CharField(max_length=50)
+    email_address = models.EmailField(max_length=100)
+    address = models.CharField(max_length=200)

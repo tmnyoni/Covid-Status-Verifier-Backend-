@@ -2,14 +2,14 @@ from ..utils import generate_hmac_code
 from decouple import config
 from rest_framework import serializers
 
-from ..models import Person
+from .. import models
 
 
 class PersonSerializer(serializers.ModelSerializer):
     qrcode = serializers.SerializerMethodField()
 
     class Meta:
-        model = Person
+        model = models.Person
         fields = "__all__"
 
     def get_qrcode(self, person):
@@ -19,3 +19,9 @@ class PersonSerializer(serializers.ModelSerializer):
         qrcode is scanned.
         '''
         return generate_hmac_code(person.national_id)
+
+
+class StakeHoldersSerializer(serializers.Serializer):
+    class Meta:
+        model = models.StakeHolder
+        exclude = "__all__"
