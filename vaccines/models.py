@@ -11,6 +11,13 @@ class Vaccine(models.Model):
     name = models.CharField(max_length=100)
     manufactured_country = models.CharField(max_length=100)
 
+    @property
+    def period(self):
+        if self.name.lower() == "syno-vac":
+            return 14
+        else:
+            return 31
+
     def __str__(self):
         return f'{self.pk} - {self.name}'
 
@@ -32,8 +39,7 @@ class Dose(models.Model):
     vaccine_records = models.ForeignKey(
         VaccineRecord,
         on_delete=models.CASCADE,
-        null=True,
-        blank=True
+        related_name="dose"
     )
     date = models.DateField(auto_created=True)
     vaccine = models.ForeignKey(Vaccine, on_delete=models.CASCADE)
