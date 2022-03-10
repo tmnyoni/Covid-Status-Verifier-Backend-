@@ -21,7 +21,7 @@ class PersonSerializer(serializers.ModelSerializer):
         return generate_hmac_code(person.national_id)
 
 
-class StakeHoldersSerializer(serializers.Serializer):
+class StakeHoldersSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.StakeHolder
-        exclude = "__all__"
+        fields = "__all__"

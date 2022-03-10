@@ -4,13 +4,13 @@ from rest_framework import serializers
 from .. import models
 
 
-class VaccinesSerializer(serializers.Serializer):
+class VaccinesSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Vaccine
-        exclude = "__all__"
+        fields = "__all__"
 
 
-class DosesSerializer(serializers.Serializer):
+class DosesSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Dose
-        exclude = "__all__"
+        fields = "__all__"
