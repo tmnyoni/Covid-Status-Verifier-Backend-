@@ -26,6 +26,7 @@ INSTALLED_APPS = [
 
     "core.apps.CoreConfig",
     "vaccines.apps.VaccinesConfig",
+    "accounts.apps.AccountsConfig",
 ]
 
 MIDDLEWARE = [
