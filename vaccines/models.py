@@ -15,11 +15,26 @@ class Vaccine(models.Model):
         return f'{self.pk} - {self.name}'
 
 
+class VaccineRecord(models.Model):
+    class Meta:
+        db_table = "vaccine-records"
+
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.pk}-{self.person}'
+
+
 class Dose(models.Model):
     class Meta:
         db_table = "doses"
 
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    vaccine_records = models.ForeignKey(
+        VaccineRecord,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
     date = models.DateField(auto_created=True)
     vaccine = models.ForeignKey(Vaccine, on_delete=models.CASCADE)
     administered_by = models.ForeignKey(User, on_delete=models.CASCADE)

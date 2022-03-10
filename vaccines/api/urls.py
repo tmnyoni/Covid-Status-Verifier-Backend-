@@ -10,6 +10,12 @@ router.register(
 )
 
 router.register(
+    r"vaccine-records",
+    views.VaccineRecordViewset,
+    basename='vaccine-records'
+)
+
+router.register(
     r"doses",
     views.DosesViewset,
     basename='doses'
