@@ -63,24 +63,59 @@ class PeopleViewset(viewsets.ViewSet):
     @action(detail=True, methods=["post"])
     def recognize_qrcode(self, request, pk=None):
         if request.method == "POST":
+
+            if "qrcode" not in request.data:
+                return Response(
+                    data={"Error": "Field qrcode required"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
             qrcode = request.data["qrcode"]
             object_ = get_object_or_404(self.queryset, pk=pk)
-
             object_qrcode = hashlib.sha3_512(
                 object_.national_id.encode()
             ).hexdigest()
-
-            if qrcode != object_qrcode:
-                return Response(
-                    data={"Error": "Qrcode Verification failed"},
-                    status=status.HTTP_404_NOT_FOUND
-                )
 
             if qrcode == object_qrcode:
                 return Response(
                     data={"Success": "Qrcode verified"},
                     status=status.HTTP_200_OK
                 )
+
+            else:
+                return Response(
+                    data={"Error": "Qrcode Verification failed"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+        return Response(
+            data={"Error": "Something happened"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+    @action(detail=True, methods=["post"])
+    def recognize_face(self, request, pk=None):
+        if request.method == "POST":
+            if "image" not in request.data:
+                return Response(
+                    data={"Error": "Field image required"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            '''
+            # logic to recognise the faces.
+            if image == object_face:
+                return Response(
+                    data={"Success": "Qrcode verified"},
+                    status=status.HTTP_200_OK
+                )
+
+            else:
+                return Response(
+                    data={"Error": "Qrcode Verification failed"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            '''
 
         return Response(
             data={"Error": "Something happened"},
