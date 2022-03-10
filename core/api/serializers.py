@@ -1,6 +1,4 @@
-import hmac
-import hashlib
-import binascii
+from ..utils import generate_hmac_code
 from decouple import config
 from rest_framework import serializers
 
@@ -20,9 +18,4 @@ class PersonSerializer(serializers.ModelSerializer):
         a qrcode that will be verified if the
         qrcode is scanned.
         '''
-        key = binascii.unhexlify(config("QRCODE_KEY"))
-        return hmac.new(
-            key,
-            person.national_id.encode(),
-            hashlib.sha3_512
-        ).hexdigest().upper()
+        return generate_hmac_code(person.national_id)

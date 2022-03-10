@@ -1,7 +1,3 @@
-import hmac
-import hashlib
-import binascii
-from decouple import config
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework import viewsets
@@ -10,6 +6,7 @@ from rest_framework.decorators import action
 
 from .. import models
 from . import serializers
+from ..utils import generate_hmac_code
 
 
 class PeopleViewset(viewsets.ViewSet):
@@ -77,12 +74,7 @@ class PeopleViewset(viewsets.ViewSet):
             # Get the object (Person) and re-create
             # the code using the key.
             object_ = get_object_or_404(self.queryset, pk=pk)
-            key = binascii.unhexlify(config("QRCODE_KEY"))
-            object_qrcode = hmac.new(
-                key,
-                object_.national_id.encode(),
-                hashlib.sha3_512
-            ).hexdigest().upper()
+            object_qrcode = generate_hmac_code(object_.national_id)
 
             qrcode = request.data["qrcode"]
             if qrcode == object_qrcode:
