@@ -1,4 +1,7 @@
+import hmac
 import hashlib
+import binascii
+from decouple import config
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework import viewsets
@@ -45,6 +48,7 @@ class PeopleViewset(viewsets.ViewSet):
             data=request.data,
             partial=True
         )
+
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(
@@ -70,12 +74,17 @@ class PeopleViewset(viewsets.ViewSet):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            qrcode = request.data["qrcode"]
+            # Get the object (Person) and re-create
+            # the code using the key.
             object_ = get_object_or_404(self.queryset, pk=pk)
-            object_qrcode = hashlib.sha3_512(
-                object_.national_id.encode()
-            ).hexdigest()
+            key = binascii.unhexlify(config("QRCODE_KEY"))
+            object_qrcode = hmac.new(
+                key,
+                object_.national_id.encode(),
+                hashlib.sha3_512
+            ).hexdigest().upper()
 
+            qrcode = request.data["qrcode"]
             if qrcode == object_qrcode:
                 return Response(
                     data={"Success": "Qrcode verified"},
