@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import status
-from rest_framework import viewsets
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from django.contrib.auth import models
@@ -58,3 +58,28 @@ class UserViewsets(viewsets.ViewSet):
             data={"Success": "User deleted successfully"},
             status=status.HTTP_204_NO_CONTENT
         )
+
+    @action(detail=False, methods=["POST"])
+    def create_user_groups(self, request):
+        try:
+            if request.method == "POST":
+                data = request.data
+
+                group_name = data["group_name"]
+                #permissions = data["permissions"]
+
+                group = models.Group.objects.create(name=group_name)
+                group.save()
+                if group:
+                    # set permissions.
+                    pass
+
+                return Response(
+                    data={"Success": "Group added succesfully"},
+                    status=status.HTTP_201_CREATED
+                )
+        except Exception as err:
+            return Response(
+                data={"Error": err.__str__()},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
