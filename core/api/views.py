@@ -1,4 +1,6 @@
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -22,13 +24,47 @@ class PeopleViewset(viewsets.ViewSet):
         )
 
     def create(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(
-            serializer.data,
-            status=status.HTTP_201_CREATED
-        )
+        try:
+            data = request.data
+
+            serializer = self.serializer_class(data=data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+            # Creating a user account each
+            # person during person creation.
+
+            username = data["national_id"]
+            password = "pass"
+
+            if User.objects.filter(username=username).exists():
+                return Response(
+                    {"error": "Username already exists"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            user = User.objects.create(
+                username=username,
+                first_name=data["first_name"],
+                last_name=data["last_name"],
+                email=data["email_address"]
+            )
+
+            user.set_password(password)
+            user.save()
+
+            # Sending credentials to the person
+            # so that they can access their account.
+
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        except Exception as e:
+            return Response(
+                {"error": e.__str__()},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def retrieve(self, request, pk=None):
         object_ = get_object_or_404(self.queryset, pk=pk)
