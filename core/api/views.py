@@ -32,9 +32,8 @@ class PeopleViewset(viewsets.ViewSet):
             serializer = self.serializer_class(data=data)
             serializer.is_valid(raise_exception=True)
 
-            # Creating a user account each
+            # Creating a user account for each
             # person during person creation.
-
             username = serializer.validated_data["national_id"]
             password = "pass"
 
@@ -59,6 +58,7 @@ class PeopleViewset(viewsets.ViewSet):
 
             # Sending credentials to the person
             # so that they can access their account.
+            subject = "Covid-19 Vaccination Profile"
             message = f"""
             Dear {serializer.validated_data["first_name"]}
 
@@ -72,7 +72,6 @@ class PeopleViewset(viewsets.ViewSet):
             Thank you
             Ministry of Health and Child care
             """
-            subject = "Covid-19 Vaccination Profile"
 
             send_mail(
                 subject=subject,
@@ -205,9 +204,8 @@ class StakeHoldersViewset(viewsets.ViewSet):
             serializer = self.serializer_class(data=data)
             serializer.is_valid(raise_exception=True)
 
-            # Creating a user account each
-            # person during person creation.
-
+            # Creating a user account for each
+            # stakeholder during creation.
             username = serializer.validated_data["username"]
             password = "pass"
 
@@ -222,17 +220,18 @@ class StakeHoldersViewset(viewsets.ViewSet):
                 first_name=serializer.validated_data["organisation"],
                 last_name=serializer.validated_data["branch"],
                 email=serializer.validated_data["email_address"],
-                is_staff=True #all stakeholders are staff members.
+                is_staff=True  # all stakeholders are staff members.
             )
 
-            # Saving both the newly added  person and
+            # Saving both the newly added  stakeholder and
             # their user account, after doing validation.
             serializer.save()
             user.set_password(password)
             user.save()
 
-            # Sending credentials to the person
+            # Sending credentials to the stakeholder
             # so that they can access their account.
+            subject = "Covid-19 Vaccination Profile"
             message = f"""
             Dear {serializer.validated_data["organisation"]}
 
@@ -246,7 +245,6 @@ class StakeHoldersViewset(viewsets.ViewSet):
             Thank you
             Ministry of Health and Child care
             """
-            subject = "Covid-19 Vaccination Profile"
 
             send_mail(
                 subject=subject,
