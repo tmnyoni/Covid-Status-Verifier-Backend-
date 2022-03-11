@@ -57,6 +57,15 @@ class PeopleViewset(viewsets.ViewSet):
             user.set_password(password)
             user.save()
 
+            # After adding the user, assign it
+            # to a certain group of users.
+            try:
+                group = Group.objects.get(name="people")
+                if group:
+                    user.groups.add(group)
+            except:
+                pass
+
             # Sending credentials to the person
             # so that they can access their account.
             subject = "Covid-19 Vaccination Profile"
