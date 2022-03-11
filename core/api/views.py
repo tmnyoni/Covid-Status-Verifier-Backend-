@@ -1,7 +1,8 @@
+from ast import Try
 from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from rest_framework import status
 from rest_framework import viewsets
@@ -228,6 +229,15 @@ class StakeHoldersViewset(viewsets.ViewSet):
             serializer.save()
             user.set_password(password)
             user.save()
+
+            # After adding the user, assign it
+            # to a certain group of users.
+            try:
+                group = Group.objects.get(name="stakeholders")
+                if group:
+                    user.groups.add(group)
+            except:
+                pass
 
             # Sending credentials to the stakeholder
             # so that they can access their account.
