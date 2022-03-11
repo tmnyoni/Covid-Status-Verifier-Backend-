@@ -230,7 +230,6 @@ class StakeHoldersViewset(viewsets.ViewSet):
                 first_name=serializer.validated_data["organisation"],
                 last_name=serializer.validated_data["branch"],
                 email=serializer.validated_data["email_address"],
-                is_staff=True  # all stakeholders are staff members.
             )
 
             # Saving both the newly added  stakeholder and
