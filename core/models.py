@@ -28,8 +28,10 @@ class StakeHolder(models.Model):
         db_table = "stakeholders"
 
     organisation = models.CharField(max_length=100)
+    branch = models.CharField(max_length=100)
     representative_name = models.CharField(max_length=50)
     representative_id = models.CharField(max_length=50)
     contacts = models.CharField(max_length=50)
     email_address = models.EmailField(max_length=100)
     address = models.CharField(max_length=200)
+    username = models.CharField(max_length=50)
