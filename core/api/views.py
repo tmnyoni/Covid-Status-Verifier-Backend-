@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 
@@ -34,20 +36,20 @@ class PeopleViewset(viewsets.ViewSet):
             # Creating a user account each
             # person during person creation.
 
-            username = data["national_id"]
+            username = serializer.validated_data["national_id"]
             password = "pass"
 
             if User.objects.filter(username=username).exists():
                 return Response(
                     {"error": "Username already exists"},
                     status=status.HTTP_400_BAD_REQUEST
-                )
+                )   
 
             user = User.objects.create(
                 username=username,
-                first_name=data["first_name"],
-                last_name=data["last_name"],
-                email=data["email_address"]
+                first_name=serializer.validated_data["first_name"],
+                last_name=serializer.validated_data["last_name"],
+                email=serializer.validated_data["email_address"]
             )
 
             user.set_password(password)
@@ -55,11 +57,33 @@ class PeopleViewset(viewsets.ViewSet):
 
             # Sending credentials to the person
             # so that they can access their account.
+            message = f"""
+            Dear {serializer.validated_data["first_name"]}
+
+            Thank you for vaccinating.
+            Find a copy of your credentials to use to access
+            you profile account.
+
+            Username: {username}
+            Password: {password}
+
+            Thank you
+            Ministry of Health and Child care
+            """
+            subject = "Covid-19 Vaccination Profile"
+
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[serializer.validated_data["email_address"], ]
+            )
 
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED
             )
+
         except Exception as e:
             return Response(
                 {"error": e.__str__()},

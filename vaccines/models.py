@@ -13,10 +13,10 @@ class Vaccine(models.Model):
 
     @property
     def period(self):
-        if self.name.lower() == "syno-vac":
-            return 14
+        if self.name.lower() == "synovac":
+            return (days := 14)
         else:
-            return 31
+            return (days := 31)
 
     def __str__(self):
         return f'{self.pk} - {self.name}'
