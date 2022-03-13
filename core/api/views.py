@@ -95,9 +95,9 @@ class PeopleViewset(viewsets.ViewSet):
                 status=status.HTTP_201_CREATED
             )
 
-        except Exception as e:
+        except Exception as error:
             return Response(
-                {"error": e.__str__()},
+                {"error": error},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
@@ -268,7 +268,9 @@ class StakeHoldersViewset(viewsets.ViewSet):
                 subject=subject,
                 message=message,
                 from_email=settings.EMAIL_HOST_USER,
-                recipient_list=[serializer.validated_data["email_address"], ]
+                recipient_list=[
+                    serializer.validated_data["email_address"],
+                ]
             )
 
             return Response(
@@ -276,9 +278,9 @@ class StakeHoldersViewset(viewsets.ViewSet):
                 status=status.HTTP_201_CREATED
             )
 
-        except Exception as e:
+        except Exception as error:
             return Response(
-                {"Error": e.__str__()},
+                {"Error": error},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 

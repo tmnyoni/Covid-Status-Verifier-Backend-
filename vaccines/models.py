@@ -19,7 +19,7 @@ class Vaccine(models.Model):
             return (days := 31)
 
     def __str__(self):
-        return f'{self.pk} - {self.name}'
+        return f'{self.pk}: {self.name}'
 
 
 class VaccineRecord(models.Model):
@@ -29,7 +29,7 @@ class VaccineRecord(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.pk}-{self.person}'
+        return f'{self.pk}: {self.person}'
 
 
 class Dose(models.Model):
@@ -46,4 +46,4 @@ class Dose(models.Model):
     administered_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.pk} - {self.person}'
+        return f'{self.pk}: {self.vaccine_records.person}'

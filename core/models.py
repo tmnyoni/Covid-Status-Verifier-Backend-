@@ -35,3 +35,6 @@ class StakeHolder(models.Model):
     email_address = models.EmailField(max_length=100)
     address = models.CharField(max_length=200)
     username = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return f"{self.organisation} - {self.branch}"
