@@ -1,3 +1,4 @@
+from datetime import timedelta
 from decouple import config
 from pathlib import Path
 import django_heroku
@@ -61,16 +62,24 @@ TEMPLATES = [
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.AllowAny",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated", )
 }
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1000),
+    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=30),
+    "ROTATE_REFRESH_TOKENS": False,
+    "AUTH_HEADER_TYPES": ("Bearer", ),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",)
+}
+
 
 ROOT_URLCONF = 'covid_status_verifier.urls'
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 WSGI_APPLICATION = 'covid_status_verifier.wsgi.application'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 DATABASES = {
@@ -92,8 +101,6 @@ EMAIL_USE_TLS = True
 
 
 # Password validation
-# https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
