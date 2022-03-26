@@ -1,3 +1,4 @@
+from unicodedata import name
 from django.urls import path
 from . import views
 from rest_framework.routers import DefaultRouter
@@ -9,4 +10,6 @@ router.register(
     basename='users'
 )
 
-urlpatterns = router.urls
+urlpatterns = [
+    path("login/", views.LoginView.as_view(), name="login")
+] + router.urls
