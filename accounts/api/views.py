@@ -1,17 +1,21 @@
+from django.conf import settings
 from django.shortcuts import get_object_or_404
-from rest_framework import status, viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
-
-from rest_framework import views
 from django.contrib.auth import(
     models,
     authenticate
 )
-from rest_framework_simplejwt.tokens import RefreshToken
 from django.middleware import csrf
-from django.conf import settings
+
+from rest_framework import( 
+    status,
+    viewsets,
+    views
+)
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 from . import serializers
 
@@ -87,9 +91,9 @@ class UserViewsets(viewsets.ViewSet):
                     data={"Success": "Group added succesfully"},
                     status=status.HTTP_201_CREATED
                 )
-        except Exception as err:
+        except Exception as error:
             return Response(
-                data={"Error": err.__str__()},
+                data={"Error": error},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
@@ -103,6 +107,13 @@ def get_user_token(user):
 
 
 class LoginView(views.APIView):
+    """
+    Handles the login.
+
+    It authenticate the user and creates a token for the user
+    and then it creates the HTTP_Cookie.
+    """
+    
     permission_classes = [AllowAny, ]
 
     def post(self, request):
@@ -119,11 +130,6 @@ class LoginView(views.APIView):
             )
 
         user = authenticate(username=username, password=password)
-        if not user:
-            return Response(
-                {"error": "Invalid Credentials"},
-                status=status.HTTP_404_NOT_FOUND
-            )
 
         if user is not None:
             if user.is_active:
@@ -139,5 +145,11 @@ class LoginView(views.APIView):
                 )
 
                 csrf.get_token(request)
-                response.data = {"Success": "Logged In successfully"}
+                response.data = {"Success": "Logged in successfully"}
                 return response
+
+        else:
+            return Response(
+                {"error": "Invalid Credentials"},
+                status=status.HTTP_404_NOT_FOUND
+            )
