@@ -126,27 +126,38 @@ class LoginView(views.APIView):
         if username is None or password is None:
             return Response(
                 {"error": "Please provide both username and password"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_404_NOT_FOUND
             )
 
         user = authenticate(username=username, password=password)
 
         if user is not None:
             if user.is_active:
-                data = get_user_token(user)
+                token = get_user_token(user)
 
-                response.set_cookie(
-                    key=settings.SIMPLE_JWT['AUTH_COOKIE'],
-                    value=data["access"],
-                    expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
-                    secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-                    httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-                    samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
-                )
+                # response.set_cookie(
+                #     key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+                #     value=data["access"],
+                #     expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                #     secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                #     httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                #     samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+                # )
+
+                logged_user = models.User.objects.get(username=username)
+                serializer = serializers.UserSerializer(logged_user)
 
                 csrf.get_token(request)
-                response.data = {"Success": "Logged in successfully"}
-                return response
+                # response.data = {
+                #     "token": token["access"]
+                #     }
+                return Response(
+                    data={
+                        "token": token["access"],
+                        "user": serializer.data
+                    },
+                    status=status.HTTP_200_OK
+                )
 
         else:
             return Response(

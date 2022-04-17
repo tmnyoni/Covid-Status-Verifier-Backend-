@@ -10,8 +10,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -22,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     "rest_framework",
+    "corsheaders",
 
     "core.apps.CoreConfig",
     "vaccines.apps.VaccinesConfig",
@@ -30,10 +30,11 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
 
-    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -62,7 +63,9 @@ TEMPLATES = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'accounts.authenticate.AppAuthentication',
+        # 'accounts.authenticate.AppAuthentication',
+        # "rest_framework.authentication.TokenAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated", )
@@ -79,7 +82,7 @@ SIMPLE_JWT = {
     'AUTH_COOKIE_SECURE': False,
     'AUTH_COOKIE_HTTP_ONLY': True,
     'AUTH_COOKIE_PATH': '/',
-    'AUTH_COOKIE_SAMESITE': 'Lax',
+    'AUTH_COOKIE_SAMESITE': None,
 }
 
 
@@ -94,6 +97,13 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+# ]
+
 
 
 # Email.
